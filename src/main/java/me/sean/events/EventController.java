@@ -1,10 +1,12 @@
 package me.sean.events;
 
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,20 +22,27 @@ public class EventController {
 
     private EventRepository eventRepository;
 
-    @Autowired
     private ModelMapper modelMapper;
 
-    public EventController(EventRepository eventRepository, ModelMapper modelMapper){
+    private EventValidator eventValidator;
+
+    public EventController(EventRepository eventRepository, ModelMapper modelMapper, EventValidator eventValidator){
         this.modelMapper = modelMapper;
         this.eventRepository = eventRepository;
+        this.eventValidator = eventValidator;
     }
     @PostMapping
-    public ResponseEntity createEvent(@RequestBody EventDto eventDto){
+    public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors){
+        if(errors.hasErrors()){
+            return ResponseEntity.badRequest().build();
+        }
+        eventValidator.validate(eventDto,errors);
+        if(errors.hasErrors()){
+            return ResponseEntity.badRequest().build();
+        }
+
         Event event = modelMapper.map(eventDto, Event.class);
-
         Event newEvent = this.eventRepository.save(event);
-        newEvent.setId(100);
-
         URI uri = linkTo(EventController.class).slash(newEvent.getId()).toUri();
         return ResponseEntity.created(uri).body(event);
     }

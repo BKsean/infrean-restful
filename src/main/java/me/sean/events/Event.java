@@ -16,7 +16,7 @@ public class Event {
     private String description;
     private LocalDateTime beginEnrollmentDateTime;
     private LocalDateTime closeEnrollmentDateTime;
-    private LocalDateTime beginEnrollDateTime;
+    private LocalDateTime beginEventDateTime;
     private LocalDateTime endEventDateTime;
     private String location;
     private int basePrice;
@@ -26,4 +26,7 @@ public class Event {
     private boolean free;
     @Enumerated(EnumType.STRING)
     private EventStatus eventStatus;
+
+
+
 }
