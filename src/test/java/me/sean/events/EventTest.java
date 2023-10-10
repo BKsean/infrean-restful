@@ -1,9 +1,12 @@
 package me.sean.events;
 
+import junitparams.JUnitParamsRunner;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(JUnitParamsRunner.class)
 class EventTest {
 
     @Test
