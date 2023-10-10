@@ -9,12 +9,14 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
@@ -29,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 public class EventControllerTests {
     @Autowired
     MockMvc mockMvc;
@@ -41,7 +44,7 @@ public class EventControllerTests {
 
     @Test
     public void createEvent() throws Exception {
-        EventDto event = EventDto.builder()
+        Event event = Event.builder()
                 .name("Spring")
                 .description("REST API Development with Spring")
                 .beginEnrollmentDateTime(LocalDateTime.of(2018, 11, 23, 14, 21))
@@ -53,7 +56,7 @@ public class EventControllerTests {
                 .limitOfEnrollment(100)
                 .location("강남역 D2 스타텁 팩토리")
                 .build();
-        //Mockito.when(eventRepository.save(any(Event.class))).thenReturn(event);
+        Mockito.when(eventRepository.save(any(Event.class))).thenReturn(event);
         //Mockito.when(eventRepository.save(event)).thenReturn(event);
         mockMvc.perform(post("/api/events/")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -66,7 +69,8 @@ public class EventControllerTests {
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE,MediaTypes.HAL_JSON_VALUE))
                 .andExpect(jsonPath("id").value(Matchers.not(100)))
                 .andExpect(jsonPath("free").value(false))
-                .andExpect(jsonPath("offline").value(true))
+                .andExpect(jsonPath("offline").value(false))
+                .andDo(MockMvcRestDocumentation.document("create-event"))
                 //.andExpect(jsonPath("free").value(Matchers.not(false)))
         ;
     }

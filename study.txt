@@ -6,3 +6,6 @@ EntityModel
 RepresentationModel
 둘중하느를 상속해서 사용한다.
 EntityModel에는 @Json**UnWrapped가 적용되어 있다
+
+
+restdocs생성
