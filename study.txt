@@ -1,3 +1,8 @@
 여기다가 정리하장
 JUnitParmas --> 테스트 케이스 작성시 매개변수를 받을 수 있도록 하는 기능
 
+hateos로 응답에 링크추가를 하는 방법
+EntityModel
+RepresentationModel
+둘중하느를 상속해서 사용한다.
+EntityModel에는 @Json**UnWrapped가 적용되어 있다
